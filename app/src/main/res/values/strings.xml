@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MapSnap</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="preference_file_key">MapSnap</string>
 </resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/bottom_nav_map"
+        android:icon="@drawable/baseline_map_24"
+        android:title="Map"
+        app:cnb_iconColor="#e2f7fd"
+        app:cnb_textColor="#e2f7fd"
+        app:cnb_backgroundColor="#032337"/>
+    <item
+        android:id="@+id/bottom_nav_register"
+        android:title="Register"
+        android:icon="@drawable/baseline_videocam_24"
+        android:iconTint="@color/black"
+        app:cnb_iconColor="#e2f7fd"
+        app:cnb_textColor="#e2f7fd"
+        app:cnb_backgroundColor="#032337"/>
+
+<!--    <item-->
+<!--        android:id="@+id/bottom_nav_cam"-->
+<!--        android:title="Cam"-->
+<!--        app:cnb_iconColor="@color/black"-->
+<!--        app:cnb_textColor="@color/black"-->
+<!--        app:cnb_backgroundColor="#ffffff"/>-->
+
+</menu>
