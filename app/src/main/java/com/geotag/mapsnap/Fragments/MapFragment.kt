@@ -16,6 +16,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.mapbox.geojson.Point
@@ -32,6 +33,7 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 import org.json.JSONObject
 import java.util.Collections
+import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
@@ -66,6 +68,7 @@ class MapFragment : Fragment() {
     val layerID = "cameras";
     var annotationAdded = false
 
+    val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,6 +153,11 @@ class MapFragment : Fragment() {
         val centerLatitude = currentLatitude
         val centerLongitude = currentLongitude
 
+        val upperLatitude = centerLatitude + (radius / 110.574) // Convert to degrees
+        val lowerLatitude = centerLatitude - (radius / 110.574)
+        val upperLongitude = centerLongitude + (radius / (111.32 * cos(centerLatitude * PI / 180.0))) // Convert to degrees
+        val lowerLongitude = centerLongitude - (radius / (111.32 * cos(centerLatitude * PI / 180.0)))
+
         val random = Random.Default
 
         for (i in 0 until numberOfPoints) {
@@ -164,12 +172,6 @@ class MapFragment : Fragment() {
 
             coordinateList.add(Coordinate(latitude, longitude))
         }
-        coordinateList.add(
-            Coordinate(
-                (currentLatitude + 0.0004),
-                (currentLongitude + 0.0004)
-            )
-        )
 
         createMarkerList()
     }
@@ -188,8 +190,6 @@ class MapFragment : Fragment() {
             true
         })
         markerList =  ArrayList();
-//        val randomThreeD=(15..30).random()
-        Collections.swap(coordinateList,0,23)
         var stashIconSize=0.1
         var stashIcon = convertDrawableToBitmap(AppCompatResources.getDrawable(requireContext(), R.drawable.cam))
         for (i in 0 until  50){

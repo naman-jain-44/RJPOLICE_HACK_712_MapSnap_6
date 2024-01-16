@@ -4,50 +4,124 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="10dp"
     tools:context=".Fragments.RegisterFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/registercam"/>
-    <EditText
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="trial"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:padding="5dp"
+                android:id="@+id/latitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Latitude"
+                android:background="@drawable/chip_round_corners"
+                android:layout_margin="10px"/>
+            <EditText
+                android:padding="5dp"
+                android:id="@+id/longitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Longitude"
+                android:background="@drawable/chip_round_corners"
+                android:layout_margin="10px"/>
+        </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/gps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Use current location"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:backgroundTint="#00d0d0"/>
+    </LinearLayout>
+    <EditText
+        android:id="@+id/model"
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Camera Model"
+        android:background="@drawable/chip_round_corners"
+        android:layout_margin="10px"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    <EditText
+        android:id="@+id/resolution"
+        android:padding="5dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:hint="Resolution"
         android:background="@drawable/chip_round_corners"
         android:layout_margin="10px"/>
     <EditText
+        android:id="@+id/fps"
+        android:padding="5dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:hint="FPS"
+        android:background="@drawable/chip_round_corners"
+        android:layout_margin="10px"/>
+    </LinearLayout>
+    <EditText
+        android:id="@+id/range"
+        android:padding="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="trial"
+        android:hint="Visibility Range"
         android:background="@drawable/chip_round_corners"
         android:layout_margin="10px"/>
     <EditText
+        android:id="@+id/owner"
+        android:padding="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="trial"
+        android:hint="Owner"
         android:background="@drawable/chip_round_corners"
         android:layout_margin="10px"/>
+
+
     <EditText
+        android:id="@+id/number"
+        android:padding="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="trial"
+        android:hint="Mobile Number"
         android:background="@drawable/chip_round_corners"
         android:layout_margin="10px"/>
-    <EditText
+    <Spinner
+        android:id="@+id/constant"
+        android:padding="5dp"
+        android:layout_margin="10px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="trial"
-        android:background="@drawable/chip_round_corners"
-        android:layout_margin="10px"/>
-    <EditText
+        android:background="@drawable/chip_round_corners"/>
+    <Spinner
+        android:id="@+id/night"
+        android:padding="5dp"
+        android:layout_margin="10px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="trial"
-        android:background="@drawable/chip_round_corners"
-        android:layout_margin="10px"/>
+        android:background="@drawable/chip_round_corners"/>
+
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Register"

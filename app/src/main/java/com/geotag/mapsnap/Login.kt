@@ -49,9 +49,6 @@ class Login : AppCompatActivity() {
         val user = mAuth!!.currentUser
         if (user != null) {
             loginbtn!!.visibility = View.GONE
-            val s = """yup buddy the app's working
- Welcome Mr.${user.displayName}"""
-            displayToast(s)
             Handler().postDelayed({
                 val ihome = Intent(this@Login, MainActivity::class.java)
                 startActivity(ihome)
