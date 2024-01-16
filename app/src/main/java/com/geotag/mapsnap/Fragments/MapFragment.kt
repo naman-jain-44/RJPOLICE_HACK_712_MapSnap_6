@@ -1,12 +1,14 @@
 package com.geotag.mapsnap
 
 import android.app.Dialog
+import android.content.ContentValues.TAG
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import com.google.firebase.firestore.FirebaseFirestore
@@ -32,11 +35,6 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 import org.json.JSONObject
-import java.util.Collections
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.random.Random
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,6 +57,7 @@ class MapFragment : Fragment() {
     var currentLongitude=0.0
     var markerList :ArrayList<PointAnnotationOptions> = ArrayList()
     var coordinateList: MutableList<Coordinate> = mutableListOf()
+    var cameraList: MutableList<Camera> = mutableListOf()
 
     lateinit var v: View
 
@@ -144,8 +143,6 @@ class MapFragment : Fragment() {
 
     private fun createLatLongForMarker(){
         coordinateList.clear()
-        val radius = 1000.0 // 2km radius
-        val numberOfPoints = 49
         var inputLatitude= v.findViewById<EditText>(R.id.latitude).text.toString()
         var inputLongitude=v.findViewById<EditText>(R.id.longitude).text.toString()
         currentLatitude = inputLatitude.toDouble()
@@ -153,27 +150,56 @@ class MapFragment : Fragment() {
         val centerLatitude = currentLatitude
         val centerLongitude = currentLongitude
 
-        val upperLatitude = centerLatitude + (radius / 110.574) // Convert to degrees
-        val lowerLatitude = centerLatitude - (radius / 110.574)
-        val upperLongitude = centerLongitude + (radius / (111.32 * cos(centerLatitude * PI / 180.0))) // Convert to degrees
-        val lowerLongitude = centerLongitude - (radius / (111.32 * cos(centerLatitude * PI / 180.0)))
+        var upperLatitude = ((centerLatitude + 0.01)*10).toInt()
+        var lowerLatitude = ((centerLatitude - 0.01)*10).toInt()
+        var upperLongitude = ((centerLongitude + 0.01)*10).toInt()
+        var lowerLongitude = ((centerLongitude - 0.01)*10).toInt()
 
-        val random = Random.Default
+        while(upperLatitude>=lowerLatitude){
+            Log.d("TAGG", ""+upperLatitude/10.0)
+            while (upperLongitude>=lowerLongitude){
+                val ref=db.collection("coordinates").document((upperLatitude/10.0).toString()).collection((upperLongitude/10.0).toString())
+                ref.get()
+                    .addOnSuccessListener { querySnapshot ->
+                        coordinateList.clear()
+                        cameraList.clear()
 
-        for (i in 0 until numberOfPoints) {
-            val angle = random.nextDouble(0.0, 2 * Math.PI)
-            val distance = random.nextDouble(0.0, radius)
+                        for (document in querySnapshot.documents) {
+                            val camera=document.toObject(Camera::class.java)
+                            val latitude = camera!!.latitude
+                            val longitude = camera!!.longitude
+                            coordinateList.add(Coordinate(latitude, longitude))
+                            camera.id=document.id
+                            cameraList.add(camera)
+                        }
 
-            val latitudeOffset = distance * sin(angle) / 110574.0 // Convert to degrees
-            val longitudeOffset = distance * cos(angle) / (111320.0 * cos(centerLatitude * Math.PI / 180.0)) // Convert to degrees
-
-            val latitude = centerLatitude + latitudeOffset
-            val longitude = centerLongitude + longitudeOffset
-
-            coordinateList.add(Coordinate(latitude, longitude))
+                        createMarkerList()
+                    }
+                    .addOnFailureListener { e ->
+                        // Handle error during the fetching process
+                        Log.e(TAG, "Error fetching coordinates: $e")
+                    }
+                upperLongitude-=1;
+            }
+            upperLatitude-=1
         }
 
-        createMarkerList()
+//        val random = Random.Default
+//
+//        for (i in 0 until numberOfPoints+1) {
+//            val angle = random.nextDouble(0.0, 2 * Math.PI)
+//            val distance = random.nextDouble(0.0, radius)
+//
+//            val latitudeOffset = distance * sin(angle) / 110574.0 // Convert to degrees
+//            val longitudeOffset = distance * cos(angle) / (111320.0 * cos(centerLatitude * Math.PI / 180.0)) // Convert to degrees
+//
+//            val latitude = centerLatitude + latitudeOffset
+//            val longitude = centerLongitude + longitudeOffset
+//
+//            coordinateList.add(Coordinate(latitude, longitude))
+//        }
+
+//        createMarkerList()
     }
 
     private fun createMarkerList(){
@@ -192,7 +218,7 @@ class MapFragment : Fragment() {
         markerList =  ArrayList();
         var stashIconSize=0.1
         var stashIcon = convertDrawableToBitmap(AppCompatResources.getDrawable(requireContext(), R.drawable.cam))
-        for (i in 0 until  50){
+        for (i in 0 until  coordinateList.size){
 //            if(i<=1){
 //                stashIcon = convertDrawableToBitmap(AppCompatResources.getDrawable(requireContext(), R.drawable.ar_marker_new))
 //            }
@@ -235,12 +261,22 @@ class MapFragment : Fragment() {
         pointAnnotationManager?.deleteAll()
     }
     private fun onMarkerItemClick(marker: PointAnnotation) {
+
+        var number= Integer.parseInt(marker.getData()?.asJsonObject?.get("key").toString())
+        Log.d("TAGG"," "+cameraList[number].owner)
         var dialog= Dialog(requireContext())
         dialog.setContentView(R.layout.details)
         dialog.getWindow()?.setBackgroundDrawableResource(android.R.color.transparent);
         dialog.findViewById<ImageButton>(R.id.close).setOnClickListener {
             dialog.dismiss()
         }
+
+        dialog.findViewById<TextView>(R.id.owner).setText("Owner : "+cameraList[number].owner)
+        dialog.findViewById<TextView>(R.id.model).setText("Camera Model : "+cameraList[number].model)
+        dialog.findViewById<TextView>(R.id.resolution).setText("Resolution : "+cameraList[number].resolution)
+        dialog.findViewById<TextView>(R.id.visibility).setText("Visibility : "+cameraList[number].owner)
+        dialog.findViewById<TextView>(R.id.number).setText("M.No : "+cameraList[number].number)
+        dialog.findViewById<TextView>(R.id.id).setText("Id : "+cameraList[number].id)
         dialog.show()
     }
     private fun convertDrawableToBitmap(sourceDrawable: Drawable?): Bitmap? {

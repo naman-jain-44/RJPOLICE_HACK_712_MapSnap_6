@@ -181,7 +181,9 @@ class RegisterFragment : Fragment() {
             var docId = number+"#"+latitude.toString()+"#"+longitude.toString()
             db.collection("coordinates").document(latVal).collection(lonVal).document(docId)
                 .set(cameraData)
-                .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
+                .addOnSuccessListener {
+                    Log.d(TAG, "DocumentSnapshot successfully written!")
+                }
                 .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
         }
     }

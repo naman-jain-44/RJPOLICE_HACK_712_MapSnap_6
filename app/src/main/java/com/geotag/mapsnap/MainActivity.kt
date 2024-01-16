@@ -3,11 +3,16 @@ package com.geotag.mapsnap
 import android.app.Dialog
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.WindowInsets
+import android.view.WindowInsetsController
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -62,8 +67,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-        chipNavigationBarMain = findViewById<ChipNavigationBar>(R.id.main_nav)
+        hideSystemBars()
+        chipNavigationBarMain = findViewById(R.id.main_nav)
         chipNavigationBarMain.setItemSelected(
             R.id.bottom_nav_map,
             true
@@ -77,28 +82,6 @@ class MainActivity : AppCompatActivity() {
                 MapFragment()
             ).commit()
         bottomMenu()
-//        -----------------------------------------------------------------
-//        mapView = findViewById(R.id.mapView)
-//        onMapReady()
-//
-//        findViewById<Button>(R.id.search).setOnClickListener{
-//            var inputLatitude= findViewById<EditText>(R.id.latitude).text.toString()
-//            var inputLongitude=findViewById<EditText>(R.id.longitude).text.toString()
-//            if(TextUtils.isEmpty(inputLongitude) || TextUtils.isEmpty(inputLatitude)){
-//                Toast.makeText(this, "Invalid input", Toast.LENGTH_SHORT).show();
-//            }
-//            else {
-//                currentLatitude = inputLatitude.toDouble()
-//                currentLongitude = inputLongitude.toDouble()
-//                mapView.getMapboxMap().setCamera(
-//                    CameraOptions.Builder()
-//                        .center(Point.fromLngLat(currentLongitude, currentLatitude))
-//                        .zoom(17.0)
-//                        .build()
-//                )
-//                createLatLongForMarker()
-//            }
-//        }
     }
 
     private fun bottomMenu() {
@@ -114,158 +97,19 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
     }
-
-
-//    private fun onMapReady() {
-//        mapView.getMapboxMap().setCamera(
-//            CameraOptions.Builder()
-//                .zoom(17.0)
-//                .build()
-//        )
-//        mapView.getMapboxMap().loadStyle(
-//            style(styleUri="mapbox://styles/shrey1002/clpsn7gyl018z01pabppe3kdv")
-//            {
-//                annotationApi = mapView?.annotations
-//                annotaionConfig = AnnotationConfig(
-//                    layerId = layerID
-//                )
-//                pointAnnotationManager = annotationApi?.createPointAnnotationManager(annotaionConfig)!!
-//            }
-//        )
-//        mapView.getMapboxMap().addOnCameraChangeListener() {
-//            val currentZoom = mapView.getMapboxMap().cameraState.zoom
-//            if(currentZoom<10 && annotationAdded){
-////                Toast.makeText(this, "$currentZoom", Toast.LENGTH_SHORT).show()
-//                pointAnnotationManager?.deleteAll()
-//                pointAnnotationManager?.deleteAll()
-//                annotationAdded=false
-//            }
-//            else if(currentZoom>=10 && markerList.isNotEmpty() && !annotationAdded){
-//                pointAnnotationManager?.create(markerList)
-//                annotationAdded=true
-//            }
-////            else if(currentZoom>=10 && !markerList.isNotEmpty() ){
-////                createMarkerList();
-////            }
-//        }
-//
-//    }
-//    private fun createLatLongForMarker(){
-//        coordinateList.clear()
-//        val radius = 1000.0 // 2km radius
-//        val numberOfPoints = 49
-//        var inputLatitude= findViewById<EditText>(R.id.latitude).text.toString()
-//        var inputLongitude=findViewById<EditText>(R.id.longitude).text.toString()
-//            currentLatitude = inputLatitude.toDouble()
-//            currentLongitude = inputLongitude.toDouble()
-//        val centerLatitude = currentLatitude
-//        val centerLongitude = currentLongitude
-//
-//        val random = Random.Default
-//
-//        for (i in 0 until numberOfPoints) {
-//            val angle = random.nextDouble(0.0, 2 * Math.PI)
-//            val distance = random.nextDouble(0.0, radius)
-//
-//            val latitudeOffset = distance * sin(angle) / 110574.0 // Convert to degrees
-//            val longitudeOffset = distance * cos(angle) / (111320.0 * cos(centerLatitude * Math.PI / 180.0)) // Convert to degrees
-//
-//            val latitude = centerLatitude + latitudeOffset
-//            val longitude = centerLongitude + longitudeOffset
-//
-//            coordinateList.add(Coordinate(latitude, longitude))
-//        }
-//        coordinateList.add(Coordinate((currentLatitude+0.0004),(currentLongitude+0.0004)))
-//
-//        createMarkerList()
-//    }
-//    private fun createMarkerList(){
-//
-//        clearAnnotation();
-//        markerList.clear()
-//
-//
-//        // It will work when we create marker
-//        pointAnnotationManager?.addClickListener(OnPointAnnotationClickListener { annotation: PointAnnotation ->
-//            var pointerLatitude=annotation.point.latitude()
-//            var pointerLongitude=annotation.point.longitude()
-//            onMarkerItemClick(annotation)
-//            true
-//        })
-//        markerList =  ArrayList();
-////        val randomThreeD=(15..30).random()
-//        Collections.swap(coordinateList,0,23)
-//        var stashIconSize=0.1
-//        var stashIcon = convertDrawableToBitmap(AppCompatResources.getDrawable(this, R.drawable.cam))
-//        for (i in 0 until  50){
-////            if(i<=1){
-////                stashIcon = convertDrawableToBitmap(AppCompatResources.getDrawable(requireContext(), R.drawable.ar_marker_new))
-////            }
-////            else if(i<=31){
-////                stashIcon = convertDrawableToBitmap(AppCompatResources.getDrawable(requireContext(), R.drawable.simple_marker))
-////                stashIconSize=0.15
-////            }
-////            else if(i<=39){
-////                stashIcon = convertDrawableToBitmap(AppCompatResources.getDrawable(requireContext(), R.drawable.b))
-////                stashIconSize=0.4
-////            }
-////            else if(i<=47){
-////                stashIcon = convertDrawableToBitmap(AppCompatResources.getDrawable(requireContext(), R.drawable.c))
-////                stashIconSize=0.4
-////            }
-////            else if(i<=49){
-////                stashIcon = convertDrawableToBitmap(AppCompatResources.getDrawable(requireContext(), R.drawable.d))
-////                stashIconSize=0.4
-////            }
-////            else{
-////                stashIcon = convertDrawableToBitmap(AppCompatResources.getDrawable(requireContext(), R.drawable.simple_marker))
-////                stashIconSize=0.15
-////            }
-//            var keyJsonObject = JSONObject();
-//            keyJsonObject.put("key",i);
-//            val pointAnnotationOptions: PointAnnotationOptions = PointAnnotationOptions()
-//                .withPoint(Point.fromLngLat(coordinateList.get(i).longitude,coordinateList.get(i).latitude))
-//                .withData(Gson().fromJson(keyJsonObject.toString(), JsonElement::class.java))
-//                .withIconImage(stashIcon!!)
-//                .withIconSize(stashIconSize)
-//
-//            markerList.add(pointAnnotationOptions);
-//        }
-//
-//        pointAnnotationManager?.create(markerList)
-//    }
-
-//    fun clearAnnotation(){
-//        markerList = ArrayList();
-//        pointAnnotationManager?.deleteAll()
-//    }
-//    private fun onMarkerItemClick(marker: PointAnnotation) {
-//        var dialog= Dialog(this)
-//        dialog.setContentView(R.layout.details)
-//        dialog.getWindow()?.setBackgroundDrawableResource(android.R.color.transparent);
-//        dialog.findViewById<ImageButton>(R.id.close).setOnClickListener {
-//            dialog.dismiss()
-//        }
-//        dialog.show()
-//    }
-//    private fun convertDrawableToBitmap(sourceDrawable: Drawable?): Bitmap? {
-//        if (sourceDrawable == null) {
-//            return null
-//        }
-//        return if (sourceDrawable is BitmapDrawable) {
-//            sourceDrawable.bitmap
-//        } else {
-//// copying drawable object to not manipulate on the same reference
-//            val constantState = sourceDrawable.constantState ?: return null
-//            val drawable = constantState.newDrawable().mutate()
-//            val bitmap: Bitmap = Bitmap.createBitmap(
-//                drawable.intrinsicWidth, drawable.intrinsicHeight,
-//                Bitmap.Config.ARGB_8888
-//            )
-//            val canvas = Canvas(bitmap)
-//            drawable.setBounds(0, 0, 10, 10)
-//            drawable.draw(canvas)
-//            bitmap
-//        }
-//    }
+    private fun hideSystemBars() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.let { controller ->
+                controller.systemBarsBehavior =
+                    WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                window.navigationBarColor = Color.TRANSPARENT // Set transparent color for navigation bar
+                controller.hide(WindowInsets.Type.systemBars())
+            }
+        } else {
+            // For versions prior to Android 10
+            @Suppress("DEPRECATION")
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+        }
+    }
 }
