@@ -274,8 +274,10 @@ class MapFragment : Fragment() {
         dialog.findViewById<TextView>(R.id.owner).setText("Owner : "+cameraList[number].owner)
         dialog.findViewById<TextView>(R.id.model).setText("Camera Model : "+cameraList[number].model)
         dialog.findViewById<TextView>(R.id.resolution).setText("Resolution : "+cameraList[number].resolution)
-        dialog.findViewById<TextView>(R.id.visibility).setText("Visibility : "+cameraList[number].owner)
+        dialog.findViewById<TextView>(R.id.id).setText("FPS : "+cameraList[number].fps)
+        dialog.findViewById<TextView>(R.id.visibility).setText("Visibility : "+cameraList[number].range)
         dialog.findViewById<TextView>(R.id.number).setText("M.No : "+cameraList[number].number)
+        dialog.findViewById<TextView>(R.id.night).setText("Night  Vision : "+cameraList[number].nightVision)
         dialog.findViewById<TextView>(R.id.id).setText("Id : "+cameraList[number].id)
         dialog.show()
     }

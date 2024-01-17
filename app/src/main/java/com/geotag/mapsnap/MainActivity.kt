@@ -20,7 +20,9 @@ import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
+import com.geotag.mapsnap.Fragments.PendingFragment
 import com.geotag.mapsnap.Fragments.RegisterFragment
+import com.geotag.mapsnap.Fragments.ResultsFragment
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
@@ -89,6 +91,8 @@ class MainActivity : AppCompatActivity() {
             val fragment: Fragment = when (id) {
                 R.id.bottom_nav_map -> MapFragment()
                 R.id.bottom_nav_register -> RegisterFragment()
+                R.id.bottom_nav_results->ResultsFragment()
+                R.id.bottom_nav_pending->PendingFragment()
                 else -> throw IllegalArgumentException("Invalid menu item ID")
             }
 
