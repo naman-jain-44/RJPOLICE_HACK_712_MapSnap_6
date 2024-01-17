@@ -175,9 +175,9 @@ class RegisterFragment : Fragment() {
                 "constant" to constant,
                 "nightVision" to night
             )
-            val decimalFormat = DecimalFormat("#.#")
-            var latVal = (decimalFormat.format(latitude).toDouble()).toString()
-            var lonVal = (decimalFormat.format(longitude).toDouble()).toString()
+            var latVal = (Math.floor(latitude * 10) / 10).toString()
+            var lonVal =(Math.floor(longitude * 10) / 10).toString()
+            Log.d("TAGG",latVal)
             var docId = number+"#"+latitude.toString()+"#"+longitude.toString()
             db.collection("coordinates").document(latVal).collection(lonVal).document(docId)
                 .set(cameraData)
@@ -186,6 +186,14 @@ class RegisterFragment : Fragment() {
                     clear()
                 }
                 .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+
+            db.collection("cameraIds").document(docId)
+                .set(cameraData)
+                .addOnSuccessListener {
+                    clear()
+                }
+                .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+
         }
     }
 

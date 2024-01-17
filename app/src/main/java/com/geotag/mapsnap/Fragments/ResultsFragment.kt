@@ -10,8 +10,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
-import com.geotag.mapsnap.DisplayData
 import com.geotag.mapsnap.R
+import com.geotag.mapsnap.ShowData
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -50,7 +50,7 @@ class ResultsFragment : Fragment() {
         // Inflate the layout for this fragment
         v=inflater.inflate(R.layout.fragment_results, container, false)
         spinnerOptions = v.findViewById(R.id.spinnerOptions);
-        val options = listOf("People","Car","Bus","Road")
+        val options = listOf("Vehicle","People","Car","Bus","Road")
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, options)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
@@ -69,7 +69,7 @@ class ResultsFragment : Fragment() {
             }
 
             // Create an Intent to start the ShowData activity
-            val intent = Intent(requireContext(), DisplayData::class.java)
+            val intent = Intent(requireContext(), ShowData::class.java)
 
             // Pass the selected option to the ShowData activity
             intent.putExtra("selectedOption", selectedOption)
@@ -80,7 +80,7 @@ class ResultsFragment : Fragment() {
 
 
         buttonSearch2.setOnClickListener { // Create an Intent to start the ShowData activity
-            val intent = Intent(requireContext(), DisplayData::class.java)
+            val intent = Intent(requireContext(), ShowData::class.java)
 
             // Pass the selected option to the ShowData activity
             intent.putExtra("selectedOption", editTextVehicleNumber.text.toString())

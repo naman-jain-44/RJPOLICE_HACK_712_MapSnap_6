@@ -165,6 +165,7 @@ class MapFragment : Fragment() {
                         cameraList.clear()
 
                         for (document in querySnapshot.documents) {
+                            Log.d("TAGG",""+document);
                             val camera=document.toObject(Camera::class.java)
                             val latitude = camera!!.latitude
                             val longitude = camera!!.longitude
@@ -177,7 +178,7 @@ class MapFragment : Fragment() {
                     }
                     .addOnFailureListener { e ->
                         // Handle error during the fetching process
-                        Log.e(TAG, "Error fetching coordinates: $e")
+                        Log.e(TAG, "Error fetching documents")
                     }
                 upperLongitude-=1;
             }
