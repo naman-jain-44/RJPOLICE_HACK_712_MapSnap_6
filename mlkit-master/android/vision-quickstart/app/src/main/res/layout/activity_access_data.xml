@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AccessData">
+
+
+    <!-- activity_main.xml -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="0dp"> <!-- Set background color to black (#000000) -->
+
+        <!-- Centered text -->
+        <TextView
+            android:id="@+id/textViewAccessData"
+            android:layout_width="154dp"
+            android:layout_height="53dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:text="Access Data"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp" />
+
+        <!-- Option 1: Spinner -->
+
+        <!-- Search button -->
+
+        <!-- Option 2: Vehicle Number EditText -->
+
+
+        <Spinner
+            android:id="@+id/spinnerOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textViewAccessData"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="75dp"
+            android:background="#FFFFFF"
+            android:entries="@array/options_array" />
+
+        <Button
+            android:id="@+id/buttonSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spinnerOptions"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="129dp"
+            android:layout_marginEnd="160dp"
+            android:text="Search" />
+
+        <EditText
+            android:id="@+id/editTextVehicleNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttonSearch"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="79dp"
+            android:background="#FFFFFF"
+            android:hint="Enter Vehicle Number"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/buttonSearch2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spinnerOptions"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="369dp"
+            android:layout_marginEnd="114dp"
+            android:text="Search-Itinerary" />
+
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

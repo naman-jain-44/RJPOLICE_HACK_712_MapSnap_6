@@ -182,10 +182,24 @@ class RegisterFragment : Fragment() {
             db.collection("coordinates").document(latVal).collection(lonVal).document(docId)
                 .set(cameraData)
                 .addOnSuccessListener {
-                    Log.d(TAG, "DocumentSnapshot successfully written!")
+                    Toast.makeText(requireContext(),"Successfully written!",Toast.LENGTH_SHORT).show()
+                    clear()
                 }
                 .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
         }
+    }
+
+    private fun clear(){
+        val latitude = v?.findViewById<EditText>(R.id.latitude)?.setText("")
+        val longitude = v?.findViewById<EditText>(R.id.longitude)?.setText("")
+        val model = v?.findViewById<EditText>(R.id.model)?.setText("")
+        val resolution = v?.findViewById<EditText>(R.id.resolution)?.setText("")
+        val fps = v?.findViewById<EditText>(R.id.fps)?.setText("")
+        val range = v?.findViewById<EditText>(R.id.range)?.setText("")
+        val owner = v?.findViewById<EditText>(R.id.owner)?.setText("")
+        val number = v?.findViewById<EditText>(R.id.number)?.setText("")
+        val constant=v?.findViewById<Spinner>(R.id.constant)?.setSelection(0)
+        val night=v?.findViewById<Spinner>(R.id.night)?.setSelection(0)
     }
 
 
