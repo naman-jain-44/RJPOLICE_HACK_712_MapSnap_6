@@ -3,6 +3,8 @@ package com.geotag.mapsnap;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -11,10 +13,13 @@ import android.widget.ListView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,6 +31,7 @@ public class ShowData extends AppCompatActivity {
 
     private ListView listViewData;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    List<Camera> cameraList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,37 +59,58 @@ public class ShowData extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            Integer prev=0;
-                            Integer current=0;
+                            long prev=0;
+                            long current=0;
                             String previd="-1",curid="-1";
                             for (QueryDocumentSnapshot document : task.getResult()) {
-//                                current=Integer.parseInt(document.getId());
-//                                curid=document.getData().get("CameraID").toString();
+                                String id=(document.getId());
+                                current=Long.parseLong(id);
+                                curid=document.getData().get("CameraID").toString();
 
-
-                                String temp=document.getId() + "#" + document.getData().get("CameraID");
-//                                Log.d("TAGG",""+(Integer.parseInt(document.getId())));
-//                                if((current-prev)/1000>10){
-//                                    stringSet.add(temp);
-//                                }
-//                                if(!previd.equals(curid)){
+                                String temp=document.getId() + "%" + document.getData().get("CameraID");
+                                Log.d("TAGG",""+current);
+                                if(((current-prev)/1000>10) || (!previd.equals(curid))){
                                     stringSet.add(temp);
-//                                }
-//                                previd=curid;
-//                                prev=current;
+                                    DocumentReference camref=db.collection("cameraIds").document(curid);
+                                    camref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                Camera camera = document.toObject(Camera.class);
+                                                if(camera!=null){
+                                                    cameraList.add(camera);
+                                                    Log.d("TAGG",""+cameraList);
+                                                    SharedPreferences sharedPreferences = getSharedPreferences("shared", Context.MODE_PRIVATE);
+                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                    Gson gson = new Gson();
+                                                    String json = gson.toJson(cameraList);
+                                                    editor.putBoolean("check",true);
+                                                    editor.putString("list", json);
+                                                    editor.apply();
+                                                }
+                                            } else {
+                                                Log.e("TAG", "Error getting document: ", task.getException());
+                                            }
+                                        }
+                                    });
+                                }
+                                previd=curid;
+                                prev=current;
                             }
                             ArrayList<String> data = new ArrayList<>();
 
                             for(String e:stringSet) {
-                                String[] parts = e.split("#");
-                                String combinedString = "Timestamp :"+parts[0]+"\n"
-                                        +"CameraId"+parts[1]+"\n";
+                                String[] parts = e.split("%");
+                                String combinedString = "Timestamp : "+parts[0]+"\n"
+                                        +"CameraId : "+parts[1]+"\n";
                                 combinedString=combinedString+"\n"+"\n";
 //                                Log.d("TAGG",""+parts);
                                 data.add(combinedString);
                             }
                             ArrayAdapter<String> adapter = new ArrayAdapter<String>(ShowData.this, android.R.layout.simple_list_item_1, data);
                             listViewData.setAdapter(adapter);
+
                         } else {
                             Log.d("TAG", "Error getting documents: ", task.getException());
                         }

@@ -2,6 +2,7 @@ package com.geotag.mapsnap
 
 import android.app.Dialog
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
@@ -22,6 +23,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.google.gson.JsonElement
+import com.google.gson.reflect.TypeToken
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
@@ -57,8 +59,9 @@ class MapFragment : Fragment() {
     var currentLongitude=0.0
     var markerList :ArrayList<PointAnnotationOptions> = ArrayList()
     var coordinateList: MutableList<Coordinate> = mutableListOf()
-    var cameraList: MutableList<Camera> = mutableListOf()
 
+    var receivedList: MutableList<Camera> = mutableListOf()
+    var cameraList: MutableList<Camera> = mutableListOf()
     lateinit var v: View
 
     var annotationApi : AnnotationPlugin? = null
@@ -104,6 +107,22 @@ class MapFragment : Fragment() {
                 createLatLongForMarker()
             }
         }
+
+        val sharedPreferences = context?.getSharedPreferences("shared", Context.MODE_PRIVATE)
+        val gson = Gson()
+        val check=sharedPreferences!!.getBoolean("check",false)
+        if(check){
+            val json = sharedPreferences?.getString("list", null)
+            if(json!=null) {
+                val type = object : TypeToken<List<Camera>>() {}.type
+                receivedList = gson.fromJson(json, type)
+                Log.d("TAGG", "" + receivedList)
+            }
+            val editor = sharedPreferences.edit()
+            editor.putBoolean("check",false)
+            editor.apply()
+        }
+
         return v;
     }
     private fun onMapReady() {
@@ -220,6 +239,18 @@ class MapFragment : Fragment() {
         var stashIconSize=0.1
         var stashIcon = convertDrawableToBitmap(AppCompatResources.getDrawable(requireContext(), R.drawable.cam))
         for (i in 0 until  coordinateList.size){
+            stashIconSize=0.1
+            stashIcon = convertDrawableToBitmap(AppCompatResources.getDrawable(requireContext(), R.drawable.cam))
+            if(receivedList!=null ){
+                for (j in 0 until  receivedList.size){
+                    if(receivedList[j].latitude==(cameraList[i].latitude) && receivedList[j].longitude==(cameraList[i].longitude)){
+                        Log.d("TAGG","yes")
+                        stashIconSize=0.2
+                        stashIcon = convertDrawableToBitmap(AppCompatResources.getDrawable(requireContext(), R.drawable.redcam))
+                        break;
+                    }
+                }
+            }
 //            if(i<=1){
 //                stashIcon = convertDrawableToBitmap(AppCompatResources.getDrawable(requireContext(), R.drawable.ar_marker_new))
 //            }
